@@ -17,17 +17,26 @@ function App() {
       createdAt: new Date(),
     }
     const newTodos = [...todos, todo];
+
     setTodos(newTodos);
     setInputValue('')
   };
 
-  // TODO: 완료 토글
   const handleToggle = (id: string) => {
-    console.log('토글:', id);
+    const index = todos.findIndex((item) => item.id === id);
+
+    if (index > -1) {
+      const newTodos = todos.map((todo) => todo.id === id ? {
+        ...todo,
+        completed: !todo.completed
+      } : todo)
+
+      setTodos(newTodos);
+    }
   };
 
   const handleDelete = (id: string) => {
-    const newTodos = todos.filter((item) => item.id !== id);
+    const newTodos = todos.filter((todo) => todo.id !== id);
 
     setTodos(newTodos)
   };
@@ -65,10 +74,11 @@ function App() {
 
       {/* TODO: 할 일 목록 */}
       <ul className="todo-list">
-        {filteredTodos.map((todo) => (
-          <li key={todo.id} className="todo-item">
-            <span>{todo.text}</span>
-            <button onClick={() => handleDelete(todo.id)} className='delete-button'>x</button>
+        {filteredTodos.map(({ id, text, completed }) => (
+          <li key={id} className="todo-item">
+            <input id={`todo-item-${id}`} type="checkbox" onChange={() => handleToggle(id)} checked={completed} />
+            <label htmlFor={`todo-item-${id}`}>{text}</label>
+            <button onClick={() => handleDelete(id)} className='delete-button'>x</button>
           </li>
         ))}
       </ul>
