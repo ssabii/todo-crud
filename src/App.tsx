@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { initialTodos, Todo, FilterType, generateId } from './data/todos';
 import './App.css';
+import TodoItem from './components/TodoItem';
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>(initialTodos);
@@ -87,13 +88,10 @@ function App() {
 
       {/* TODO: 할 일 목록 */}
       <ul className="todo-list">
-        {filteredTodos.map(({ id, text, completed }) => (
-          <li key={id} className={completed ? "todo-item completed" : "todo-item"}>
-            <input id={`todo-item-${id}`} type="checkbox" onChange={() => handleToggle(id)} checked={completed} />
-            <label htmlFor={`todo-item-${id}`}>{text}</label>
-            <button onClick={() => handleDelete(id)} className='delete-button'>x</button>
-          </li>
+        {filteredTodos.map((todo) => (
+          <TodoItem todo={todo} onToggleTodo={handleToggle} onDeleteTodo={handleDelete} />
         ))}
+
       </ul>
       {isEmpty && <div className='empty-state'>{emptyTextMap[filter]}</div>}
 
