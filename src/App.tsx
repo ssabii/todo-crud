@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { initialTodos, Todo, FilterType } from './data/todos';
+import { FormEvent, useState } from 'react';
+import { initialTodos, Todo, FilterType, generateId } from './data/todos';
 import './App.css';
 
 function App() {
@@ -8,8 +8,18 @@ function App() {
   const [inputValue, setInputValue] = useState('');
 
   // TODO: 할 일 추가
-  const handleAdd = () => {
-    console.log('추가:', inputValue);
+  const handleAdd = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const todo: Todo = {
+      id: generateId(),
+      text: inputValue,
+      completed: false,
+      createdAt: new Date(),
+    }
+    const newTodos = [...todos, todo];
+    setTodos(newTodos);
+    setInputValue('')
   };
 
   // TODO: 완료 토글
@@ -33,7 +43,7 @@ function App() {
       <h1>할 일 목록</h1>
 
       {/* 입력 영역 */}
-      <div className="input-container">
+      <form onSubmit={handleAdd} className='input-container'>
         <input
           type="text"
           value={inputValue}
@@ -41,10 +51,10 @@ function App() {
           placeholder="할 일을 입력하세요"
           className="todo-input"
         />
-        <button onClick={handleAdd} className="add-button">
+        <button type="submit" className="add-button">
           추가
         </button>
-      </div>
+      </form>
 
       {/* TODO: 필터 버튼 */}
       <div className="filter-container">
