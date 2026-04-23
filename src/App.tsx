@@ -41,8 +41,16 @@ function App() {
     setTodos(newTodos)
   };
 
-  // TODO: 필터링된 목록
-  const filteredTodos = todos;
+  const handleFilterClick = (name: string) => {
+    setFilter(name);
+  }
+
+
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === 'completed') return todo.completed;
+    if (filter === 'active') return !todo.completed;
+    return true;
+  });
 
   const remainingCount = todos.filter((todo) => !todo.completed).length;
 
@@ -66,9 +74,9 @@ function App() {
 
       {/* TODO: 필터 버튼 */}
       <div className="filter-container">
-        <button className={filter === 'all' ? 'active' : ''}>전체</button>
-        <button className={filter === 'active' ? 'active' : ''}>진행중</button>
-        <button className={filter === 'completed' ? 'active' : ''}>완료</button>
+        <button onClick={() => handleFilterClick('all')} className={filter === 'all' ? 'active' : ''}>전체</button>
+        <button onClick={() => handleFilterClick('active')} className={filter === 'active' ? 'active' : ''}>진행중</button>
+        <button onClick={() => handleFilterClick('completed')} className={filter === 'completed' ? 'active' : ''}>완료</button>
       </div>
 
       {/* TODO: 할 일 목록 */}
