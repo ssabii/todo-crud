@@ -2,44 +2,18 @@ import { FormEvent, useState } from 'react';
 import { initialTodos, Todo, FilterType, generateId } from './data/todos';
 import './App.css';
 import TodoItem from './components/TodoItem';
+import useTodos from './hooks/useTodos';
 
 function App() {
-  const [todos, setTodos] = useState<Todo[]>(initialTodos);
+  const { todos, addTodo, deleteTodo, toggleTodo } = useTodos();
   const [filter, setFilter] = useState<FilterType>('all');
   const [inputValue, setInputValue] = useState('');
 
   const handleAdd = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const todo: Todo = {
-      id: generateId(),
-      text: inputValue,
-      completed: false,
-      createdAt: new Date(),
-    }
-    const newTodos = [...todos, todo];
-
-    setTodos(newTodos);
+    addTodo(inputValue)
     setInputValue('')
-  };
-
-  const handleToggle = (id: string) => {
-    const index = todos.findIndex((item) => item.id === id);
-
-    if (index > -1) {
-      const newTodos = todos.map((todo) => todo.id === id ? {
-        ...todo,
-        completed: !todo.completed
-      } : todo)
-
-      setTodos(newTodos);
-    }
-  };
-
-  const handleDelete = (id: string) => {
-    const newTodos = todos.filter((todo) => todo.id !== id);
-
-    setTodos(newTodos)
   };
 
   const handleFilterClick = (name: FilterType) => {
@@ -89,7 +63,7 @@ function App() {
       {/* TODO: 할 일 목록 */}
       <ul className="todo-list">
         {filteredTodos.map((todo) => (
-          <TodoItem todo={todo} onToggleTodo={handleToggle} onDeleteTodo={handleDelete} />
+          <TodoItem todo={todo} onToggleTodo={() => toggleTodo(todo.id)} onDeleteTodo={() => deleteTodo(todo.id)} />
         ))}
 
       </ul>
