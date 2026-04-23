@@ -118,6 +118,10 @@ h1 {
 }
 
 /* TODO: 빈 상태 스타일 */
-/*
-.empty-state { }
-*/
+.empty-state {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: grey;
+}

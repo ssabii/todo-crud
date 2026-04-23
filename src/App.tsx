@@ -41,16 +41,22 @@ function App() {
     setTodos(newTodos)
   };
 
-  const handleFilterClick = (name: string) => {
+  const handleFilterClick = (name: FilterType) => {
     setFilter(name);
   }
 
+  const emptyTextMap: Record<FilterType, string> = {
+    'all': '할일을 추가해 보세요.',
+    'completed': '완료된 항목이 없습니다.',
+    'active': '진행중인 항목이 없습니다.',
+  }
 
   const filteredTodos = todos.filter((todo) => {
     if (filter === 'completed') return todo.completed;
     if (filter === 'active') return !todo.completed;
     return true;
   });
+  const isEmpty = filteredTodos.length === 0;
 
   const remainingCount = todos.filter((todo) => !todo.completed).length;
 
@@ -89,6 +95,7 @@ function App() {
           </li>
         ))}
       </ul>
+      {isEmpty && <div className='empty-state'>{emptyTextMap[filter]}</div>}
 
       {/* TODO: 카운터 */}
       <div className="counter">{remainingCount}개 남음</div>
