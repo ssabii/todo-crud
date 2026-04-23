@@ -75,7 +75,7 @@ function App() {
       {/* TODO: 할 일 목록 */}
       <ul className="todo-list">
         {filteredTodos.map(({ id, text, completed }) => (
-          <li key={id} className="todo-item">
+          <li key={id} className={completed ? "todo-item completed" : "todo-item"}>
             <input id={`todo-item-${id}`} type="checkbox" onChange={() => handleToggle(id)} checked={completed} />
             <label htmlFor={`todo-item-${id}`}>{text}</label>
             <button onClick={() => handleDelete(id)} className='delete-button'>x</button>
