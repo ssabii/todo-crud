@@ -7,7 +7,6 @@ function App() {
   const [filter, setFilter] = useState<FilterType>('all');
   const [inputValue, setInputValue] = useState('');
 
-  // TODO: 할 일 추가
   const handleAdd = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -27,9 +26,10 @@ function App() {
     console.log('토글:', id);
   };
 
-  // TODO: 삭제
   const handleDelete = (id: string) => {
-    console.log('삭제:', id);
+    const newTodos = todos.filter((item) => item.id !== id);
+
+    setTodos(newTodos)
   };
 
   // TODO: 필터링된 목록
@@ -68,6 +68,7 @@ function App() {
         {filteredTodos.map((todo) => (
           <li key={todo.id} className="todo-item">
             <span>{todo.text}</span>
+            <button onClick={() => handleDelete(todo.id)} className='delete-button'>x</button>
           </li>
         ))}
       </ul>
