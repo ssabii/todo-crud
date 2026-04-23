@@ -1,68 +1,119 @@
-import { useState } from 'react';
-import { initialTodos, Todo, FilterType } from './data/todos';
-import './App.css';
+import "./App.css";
+
+import { useEffect, useState } from "react";
+import { TodoItem } from "./components/TodoItem";
+import { FilterType, initialTodos, Todo } from "./data/todos";
+import { TodoFilter } from "./components/TodoFilter";
+import { InputContainer } from "./components/InputContainer";
 
 function App() {
-  const [todos, setTodos] = useState<Todo[]>(initialTodos);
-  const [filter, setFilter] = useState<FilterType>('all');
-  const [inputValue, setInputValue] = useState('');
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [filter, setFilter] = useState<FilterType>("all");
+  const [inputValue, setInputValue] = useState("");
 
-  // TODO: 할 일 추가
+  useEffect(() => {
+    const localTodos = localStorage.getItem("todos");
+    if (!localTodos) {
+      setTodos(initialTodos);
+      return;
+    }
+
+    setTodos(JSON.parse(localTodos));
+  }, []);
+
   const handleAdd = () => {
-    console.log('추가:', inputValue);
+    const value = inputValue.trim();
+
+    if (value) {
+      setTodos((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString() + Math.random() * 100000,
+          text: value,
+          completed: false,
+          createdAt: new Date(),
+          isUpdated: false,
+        },
+      ]);
+      setInputValue("");
+    }
   };
 
-  // TODO: 완료 토글
   const handleToggle = (id: string) => {
-    console.log('토글:', id);
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
   };
 
-  // TODO: 삭제
   const handleDelete = (id: string) => {
-    console.log('삭제:', id);
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
   };
 
-  // TODO: 필터링된 목록
-  const filteredTodos = todos;
+  const changeUpdateMode = (id: string) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === id ? { ...todo, isUpdated: true } : todo,
+      ),
+    );
+  };
 
-  // TODO: 남은 할 일 개수
-  const remainingCount = 0;
+  const handleDeleteAll = () => {
+    setTodos((prev) => prev.filter((todo) => !todo.completed));
+  };
+
+  const saveLocalStorage = () => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  };
+
+  const filteredTodos = todos.filter((t) => {
+    if (filter === "all") return true;
+    if (filter === "active") return t.completed === false;
+    if (filter === "completed") return t.completed;
+    return false;
+  });
+
+  const remainingCount = filteredTodos.filter((todo) => !todo.completed).length;
 
   return (
     <div className="app">
       <h1>할 일 목록</h1>
 
-      {/* 입력 영역 */}
-      <div className="input-container">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="할 일을 입력하세요"
-          className="todo-input"
-        />
-        <button onClick={handleAdd} className="add-button">
-          추가
-        </button>
-      </div>
+      <InputContainer
+        text={inputValue}
+        onChange={setInputValue}
+        handleSubmit={handleAdd}
+        rightSlot={
+          <button onClick={handleAdd} className="add-button">
+            추가
+          </button>
+        }
+      />
 
-      {/* TODO: 필터 버튼 */}
-      <div className="filter-container">
-        <button className={filter === 'all' ? 'active' : ''}>전체</button>
-        <button className={filter === 'active' ? 'active' : ''}>진행중</button>
-        <button className={filter === 'completed' ? 'active' : ''}>완료</button>
-      </div>
+      <TodoFilter filter={filter} changeFilter={setFilter} />
 
-      {/* TODO: 할 일 목록 */}
+      <button type="button" onClick={handleDeleteAll}>
+        완료된 항목 일괄 삭제
+      </button>
+
+      <button type="button" onClick={saveLocalStorage}>
+        localStorage에 저장
+      </button>
+
       <ul className="todo-list">
         {filteredTodos.map((todo) => (
-          <li key={todo.id} className="todo-item">
-            <span>{todo.text}</span>
-          </li>
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            onToggle={handleToggle}
+            onDelete={handleDelete}
+            changeUpdateMode={changeUpdateMode}
+            setTodos={setTodos}
+          />
         ))}
       </ul>
 
-      {/* TODO: 카운터 */}
       <div className="counter">{remainingCount}개 남음</div>
     </div>
   );

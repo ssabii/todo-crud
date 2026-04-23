@@ -3,34 +3,39 @@ export interface Todo {
   text: string;
   completed: boolean;
   createdAt: Date;
+  isUpdated: boolean;
 }
 
-export type FilterType = 'all' | 'active' | 'completed';
+export type FilterType = "all" | "active" | "completed";
 
 export const initialTodos: Todo[] = [
   {
-    id: '1',
-    text: '프로젝트 기획서 검토',
+    id: "1",
+    text: "프로젝트 기획서 검토",
     completed: false,
-    createdAt: new Date('2024-01-15T09:00:00'),
+    createdAt: new Date("2024-01-15T09:00:00"),
+    isUpdated: false,
   },
   {
-    id: '2',
-    text: 'PR 코드 리뷰',
+    id: "2",
+    text: "PR 코드 리뷰",
     completed: true,
-    createdAt: new Date('2024-01-15T10:30:00'),
+    createdAt: new Date("2024-01-15T10:30:00"),
+    isUpdated: false,
   },
   {
-    id: '3',
-    text: '팀 미팅 참석',
+    id: "3",
+    text: "팀 미팅 참석",
     completed: false,
-    createdAt: new Date('2024-01-15T14:00:00'),
+    createdAt: new Date("2024-01-15T14:00:00"),
+    isUpdated: false,
   },
   {
-    id: '4',
-    text: '버그 수정 배포',
+    id: "4",
+    text: "버그 수정 배포",
     completed: false,
-    createdAt: new Date('2024-01-15T16:00:00'),
+    createdAt: new Date("2024-01-15T16:00:00"),
+    isUpdated: false,
   },
 ];
 
